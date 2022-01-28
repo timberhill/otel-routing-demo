@@ -22,7 +22,5 @@ Based on: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree
 
 ### Prometheus UI
 
-* Prometheus (http://localhost:9090): `kubectl port-forward svc/prometheus 9090:9090`
-* Prometheus/hc (http://localhost:9091): `kubectl port-forward svc/prometheus-hc 9091:9091`
-
-
+* Prometheus (http://0.0.0.0:9090)
+* Prometheus/hc (http://0.0.0.0:9091)
