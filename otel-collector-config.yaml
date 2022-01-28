@@ -1,0 +1,50 @@
+---
+receivers:
+  otlp:
+    protocols:
+      grpc:
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    const_labels:
+      label1: value1
+  prometheus/hc:
+    endpoint: "0.0.0.0:8899"
+    const_labels:
+      label1: value2
+  logging:
+
+processors:
+  routing:
+    default_exporters:
+    - prometheus
+    # attribute_source: context
+    from_attribute: X-Custom-Metrics-Header
+    table:
+    - value: business-critical
+      exporters:
+      - prometheus
+    - value: high-cardinality
+      exporters:
+      - prometheus/hc
+  batch:
+
+extensions:
+  health_check:
+  pprof:
+    endpoint: :1888
+  zpages:
+    endpoint: :55679
+
+service:
+  extensions: [pprof, zpages, health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]
+    metrics:
+      receivers: [otlp]
+      processors: [batch, routing]
+      exporters: [logging, prometheus, prometheus/hc]
